@@ -10,19 +10,24 @@ class BookUser(models.Model):
     pass
 
 
+class Genre(models.Model):
+    name = models.CharField(max_length=250)
+
+
 class Book(models.Model):
-    POLITICS = 'P'
-    FINANCE = 'F'
-    ROMANCE = 'R'
-    BOOK_CHOICES = [
-        (POLITICS, 'Politics'),
-        (FINANCE, 'Finance'),
-        (ROMANCE, 'Romance'),
-    ]
+    # POLITICS = 'P'
+    # FINANCE = 'F'
+    # ROMANCE = 'R'
+    # BOOK_CHOICES = [
+    #     (POLITICS, 'Politics'),
+    #     (FINANCE, 'Finance'),
+    #     (ROMANCE, 'Romance'),
+    # ]
     title = models.CharField(max_length=255)
     summary = models.TextField()
-    isbn = models.CharField(max_length=10)
-    genre = models.CharField(max_length=1, choices=BOOK_CHOICES, default=FINANCE)
+    isbn = models.CharField(max_length=15)
+    genre = models.ManyToManyField(Genre, related_name='books')
+    # genre = models.CharField(max_length=1, choices=BOOK_CHOICES, default=FINANCE)
     author = models.ForeignKey('Author', on_delete=models.CASCADE)
 
     def __str__(self):
