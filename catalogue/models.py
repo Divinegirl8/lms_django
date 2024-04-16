@@ -13,6 +13,9 @@ class BookUser(models.Model):
 class Genre(models.Model):
     name = models.CharField(max_length=250)
 
+    def __str__(self):
+        return f"{self.name}"
+
 
 class Book(models.Model):
     # POLITICS = 'P'
@@ -30,8 +33,11 @@ class Book(models.Model):
     # genre = models.CharField(max_length=1, choices=BOOK_CHOICES, default=FINANCE)
     author = models.ForeignKey('Author', on_delete=models.CASCADE)
 
+    def list_genre(self):
+        return ','.join(genre.name for genre in self.genre.all()[:2])
+
     def __str__(self):
-        return f'{self.title} {self.isbn} {self.summary} {self.genre}'
+        return f'{self.title} {self.isbn} {self.summary} {self.list_genre()}'
 
 
 class Author(models.Model):
