@@ -23,5 +23,6 @@ urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     path("auth/", include(urls)),
     path('demo/', include('demo.urls')),
+    path('catalogue/', include('catalogue.urls'))
 
 ]
