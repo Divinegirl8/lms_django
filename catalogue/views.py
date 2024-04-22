@@ -4,28 +4,37 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from .models import Book, Author,Review
-from .serializers import BookSerializer, AuthorSerializer,ReviewSerializer
+from .models import Book, Author, Review
+from .pagination import DefaultPagination
+from .serializers import BookSerializer, AuthorSerializer, ReviewSerializer
 from django.shortcuts import get_object_or_404
 
 
 # Create your views here.
 class BookViewSet(ModelViewSet):
-     queryset = Book.objects.all()
-     serializer_class = BookSerializer
+    pagination_class = DefaultPagination
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
 
 
 class AuthorViewSet(ModelViewSet):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
 
+
 class ReviewViewSet(ModelViewSet):
-    queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
+    # queryset = Review.objects.all()
+    # serializer_class = ReviewSerializer
+    def get_queryset(self):
+        return Review.objects.filter(book_id=self.kwargs['book_pk'])
+
+    def get_serializer_context(self):
+        return {'book_pk': self.kwargs['book_pk']}
 
 
 class Book_List(APIView):
