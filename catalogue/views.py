@@ -3,25 +3,63 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
-from .models import Book, Author
-from .serializers import BookSerializer, AuthorSerializer
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
+
+from .models import Book, Author,Review
+from .serializers import BookSerializer, AuthorSerializer,ReviewSerializer
 from django.shortcuts import get_object_or_404
 
 
 # Create your views here.
+class BookViewSet(ModelViewSet):
+     queryset = Book.objects.all()
+     serializer_class = BookSerializer
 
-@api_view(['GET', 'POST'])
-def book_list(request):
-    if request.method == 'GET':
-        books = Book.objects.all()
-        serializer = BookSerializer(books, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    elif request.method == 'POST':
+
+class AuthorViewSet(ModelViewSet):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+
+class ReviewViewSet(ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+
+class Book_List(APIView):
+    def post(self, request):
         serializer = BookSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def get(self, request):
+        books = Book.objects.all()
+        serializer = BookSerializer(books, many=True,
+                                    context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+"=========================================================================="
+
+
+class BookList(ListCreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+    def get_serializer_context(self):
+        return {"request": self.request}
+
+
+# @api_view(['GET', 'POST'])
+# def book_list(request):
+#     if request.method == 'GET':
+#
+#
+#     elif request.method == 'POST':
+#
 
 
 # @api_view()
@@ -32,56 +70,126 @@ def book_list(request):
 #         return Response(serializer.data, status=status.HTTP_200_OK)
 #     except Book.DoesNotExist:
 #         return Response(status=status.HTTP_404_NOT_FOUND)
+"================================================================="
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def book_detail(request, pk):
-    book = get_object_or_404(Book, id=pk)
-    if request.method == 'GET':
+class Book_Details(APIView):
+    def get(self, request, pk):
         book = get_object_or_404(Book, id=pk)
         serializer = BookSerializer(book)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    elif request.method == 'PUT':
+
+    def put(self, request, pk):
+        book = get_object_or_404(Book, id=pk)
         serializer = BookSerializer(book, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
-    elif request.method == 'DELETE':
+
+    def delete(self, request, pk):
+        book = get_object_or_404(Book, id=pk)
         book.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['GET', 'POST'])
-def author_list(request):
-    if request.method == 'GET':
-        author = Author.objects.all()
-        serializer = AuthorSerializer(author, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    elif request.method == 'POST':
-        serializer = AuthorSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+class BookDetails(RetrieveUpdateDestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def author_details(request, pk):
-    author = get_object_or_404(Author, id=pk)
+# @api_view(['GET', 'PUT', 'DELETE'])
+# def book_detail(request, pk):
+#     book = get_object_or_404(Book, id=pk)
+#     if request.method == 'GET':
+#         book = get_object_or_404(Book, id=pk)
+#         serializer = BookSerializer(book)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#     elif request.method == 'PUT':
+#         serializer = BookSerializer(book, data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#     elif request.method == 'DELETE':
+#         book.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+"=============================================================================="
 
-    if request.method == 'GET':
+
+class AuthorList(ListCreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+
+# class AuthorList(APIView):
+#     def get(self, request):
+#         author = Author.objects.all()
+#         serializer = AuthorSerializer(author, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#
+#     def post(self, request):
+#         serializer = AuthorSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+# @api_view(['GET', 'POST'])
+# def author_list(request):
+#     if request.method == 'GET':
+#         author = Author.objects.all()
+#         serializer = AuthorSerializer(author, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#
+#     elif request.method == 'POST':
+#         serializer = AuthorSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+"=================================================================================="
+
+
+class AuthorDetails(RetrieveUpdateDestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+
+class Author_Details(APIView):
+    def get(self, request, pk):
         author = get_object_or_404(Author, id=pk)
         serializer = AuthorSerializer(author)
-        author_qrcode= segno.make_qr("welcome to Django")
+        author_qrcode = segno.make_qr("welcome to Django")
         author_qrcode.save("welcome.png")
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    elif request.method == 'PUT':
+    def put(self, request, pk):
+        author = get_object_or_404(Author, id=pk)
         serializer = AuthorSerializer(author, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    elif request.method == "DELETE":
+    def delete(self, pk):
+        author = get_object_or_404(Author, id=pk)
         author.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+# @api_view(['GET', 'PUT', 'DELETE'])
+# def author_details(request, pk):
+#     author = get_object_or_404(Author, id=pk)
+#
+#     if request.method == 'GET':
+#         author = get_object_or_404(Author, id=pk)
+#         serializer = AuthorSerializer(author)
+#         author_qrcode = segno.make_qr("welcome to Django")
+#         author_qrcode.save("welcome.png")
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#
+#     elif request.method == 'PUT':
+#         serializer = AuthorSerializer(author, data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#
+#     elif request.method == "DELETE":
+#         author.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)

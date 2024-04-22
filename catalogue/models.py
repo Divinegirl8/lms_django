@@ -72,3 +72,13 @@ class BookInstance(models.Model):
 
     def __str__(self):
         return f'{self.unique_id} {self.due_back} {self.status}'
+
+
+class Review(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    message = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return  f'{self.name} {self.message} {self.book}'
