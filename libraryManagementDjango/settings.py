@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'rest_framework',
+    'django_filters',
+    'djoser',
     'demo',
     'catalogue',
     'user'
@@ -133,6 +135,17 @@ INTERNAL_IPS = [
     # ...
 ]
 AUTH_USER_MODEL = 'user.LibraryUser'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+
+    ),
+}
+
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('JWT',),
+}
 
 # REST_FRAMEWORK = {
 #     'PAGE_SIZE': 10

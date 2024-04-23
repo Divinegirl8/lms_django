@@ -10,6 +10,7 @@ mysqlclient = "*"
 djangorestframework = "*"
 segno = "*"
 drf-nested-routers = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 

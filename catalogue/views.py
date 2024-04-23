@@ -1,8 +1,11 @@
 import segno
 from django.http import HttpResponse
 from django.shortcuts import render
+
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.filters import SearchFilter,OrderingFilter
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -17,14 +20,20 @@ from django.shortcuts import get_object_or_404
 
 # Create your views here.
 class BookViewSet(ModelViewSet):
-    pagination_class = DefaultPagination
-    queryset = Book.objects.all()
     serializer_class = BookSerializer
+    queryset = Book.objects.all()
+    pagination_class = DefaultPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["title", "genre", "summary"]
 
 
 class AuthorViewSet(ModelViewSet):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
+
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['first_name', 'last_name']
+    ordering_fields = ['first_name']
 
 
 class ReviewViewSet(ModelViewSet):
