@@ -8,9 +8,11 @@ from rest_framework.decorators import api_view
 from rest_framework.filters import SearchFilter,OrderingFilter
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+from catalogue.permission import IsAdminReadOnly
 
 from .models import Book, Author, Review
 from .pagination import DefaultPagination
@@ -30,7 +32,8 @@ class BookViewSet(ModelViewSet):
 class AuthorViewSet(ModelViewSet):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
-
+    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminReadOnly]
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['first_name', 'last_name']
     ordering_fields = ['first_name']
