@@ -6,7 +6,7 @@ from libraryManagementDjango import settings
 
 # Create your models here.
 class BookImage(models.Model):
-    book = models.ForeignKey('Book',on_delete=models.CASCADE, related_name='book-image')
+    book = models.ForeignKey('Book',on_delete=models.CASCADE, related_name='book_image')
     img_field = models.ImageField(upload_to='')
 
 
@@ -36,7 +36,7 @@ class Book(models.Model):
     genre = models.ManyToManyField(Genre, related_name='books')
     # genre = models.CharField(max_length=1, choices=BOOK_CHOICES, default=FINANCE)
     author = models.ForeignKey('Author', on_delete=models.CASCADE)
-    bookImage = models.ForeignKey(BookImage, on_delete=models.CASCADE)
+
 
     def list_genre(self):
         return ','.join(genre.name for genre in self.genre.all()[:2])
